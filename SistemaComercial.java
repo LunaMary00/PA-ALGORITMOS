@@ -85,6 +85,7 @@ public class SistemaComercial {
         double[] subTotalesItems = new double[carrito.length];
         int contadorAprobados = 0; 
 
+     
         for (int i = 0; i < carrito.length; i++) {
             String productoBuscado = carrito[i];
             int cantidadPedida = cants[i];
@@ -104,13 +105,6 @@ public class SistemaComercial {
                 continue; // Salta a la siguiente iteración
             }
 
-            // Filtro 3: Stock insuficiente (Ajuste adaptativo)
-            if (invStock[indiceInventario] < cantidadPedida) {
-                System.out.printf("  [AJUSTE LOGÍSTICO] Solicitó %d unidades de '%s', pero solo quedan %d. Se despachará lo disponible.\n",
-                        cantidadPedida, productoBuscado, invStock[indiceInventario]);
-                cantidadPedida = invStock[indiceInventario]; 
-            }
-
             // Aplicar cambios transaccionales
             invStock[indiceInventario] -= cantidadPedida; 
             double costoCalculado = cantidadPedida * invPrecio[indiceInventario]; 
@@ -123,13 +117,7 @@ public class SistemaComercial {
             subtotalBruto += costoCalculado; 
                         contadorAprobados++; 
         }
-
-        // Validación: Si ningún producto pasó los filtros, frena la operación
-        if (contadorAprobados == 0) {
-            System.out.println("\n[SISTEMA CAJA] Factura cancelada de forma automática: Ningún artículo superó los filtros logísticos.");
-            return; 
-        }
-
+     
         // Cálculos finales financieros
         impuestoIva = subtotalBruto * TASA_IVA;
         totalFinal = subtotalBruto + impuestoIva;
